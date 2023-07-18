@@ -1,8 +1,6 @@
 'use strict';
 
-const verifyOTPFrom = require('../src/lib/verifyOTPFrom');
-
-const sendOTPTo = require('../src/lib/sendOTPTo');
+const { sendOTPTo, verifyOTPFrom } = require('../src');
 
 require('dotenv-safest').config();
 

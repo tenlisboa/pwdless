@@ -31,9 +31,7 @@ A quick example:
 ```js
 'use strict';
 
-const verifyOTPFrom = require('../src/lib/verifyOTPFrom');
-
-const sendOTPTo = require('../src/lib/sendOTPTo');
+const { sendOTPTo, verifyOTPFrom } = require('pwdless');
 
 require('dotenv-safest').config();
 
