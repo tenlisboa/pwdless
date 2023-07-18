@@ -1,0 +1,39 @@
+{
+  "name": "pwdless",
+  "version": "1.0.0",
+  "main": "lib/main.js",
+  "types": "lib/main.d.ts",
+  "license": "MIT",
+  "exports": {
+    ".": {
+        "import": "./lib/main.js",
+        "types": "./lib/main.d.ts",
+        "require": "./lib/main.js",
+        "default": "./lib/main.js"
+    },
+    "./lib/main.js": "./lib/main.js"
+  },
+  "keywords": [
+    "security",
+    "password",
+    "less",
+    "email",
+    "otp"
+  ],
+  "scripts": {
+    "start": "node index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.3",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "eslint": ">=5.16.0",
+    "dotenv-safest": "^1.1.1",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.8.0",
+    "prettier": "^3.0.0"
+  }
+}
