@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const { getConfig } = require('../lib/config');
 
 const SendEmailOptions = {
   from: '',
@@ -8,14 +9,9 @@ const SendEmailOptions = {
 };
 
 async function sendEmail({ from, to, text, html } = SendEmailOptions) {
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  const mailer = getConfig().mailer;
+
+  const transporter = nodemailer.createTransport(mailer);
 
   transporter.sendMail({
     from,
