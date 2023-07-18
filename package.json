@@ -1,17 +1,17 @@
 {
   "name": "pwdless",
   "version": "1.0.1",
-  "main": "lib/main.js",
-  "types": "lib/main.d.ts",
+  "main": "src/lib/main.js",
+  "types": "src/lib/main.d.ts",
   "license": "MIT",
   "exports": {
     ".": {
-      "import": "./lib/main.js",
-      "types": "./lib/main.d.ts",
-      "require": "./lib/main.js",
-      "default": "./lib/main.js"
+      "import": "./src/lib/main.js",
+      "types": "./src/lib/main.d.ts",
+      "require": "./src/lib/main.js",
+      "default": "./src/lib/main.js"
     },
-    "./lib/main.js": "./lib/main.js"
+    "./src/lib/main.js": "./src/lib/main.js"
   },
   "keywords": [
     "security",
