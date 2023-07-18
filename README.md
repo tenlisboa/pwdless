@@ -10,7 +10,7 @@ Now the lib saves a cache for validating an OTP, currently in memmory, so, if yo
 
 This version is the minimal viable usable, and updates will come soon.
 
-Feel free to contritute in [pwdless repository](https://github.com/tenlisboa/pwdless)
+Feel free to contribute in [pwdless repository](https://github.com/tenlisboa/pwdless)
 
 ### Usage
 
