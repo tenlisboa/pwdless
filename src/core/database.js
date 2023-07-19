@@ -1,80 +1,76 @@
 const sqlite3 = require('sqlite3').verbose();
 
-const _config = {
-  dbPath: ':memory:',
-};
+class Cache {
+  static #db;
 
-let db;
-
-function getDb() {
-  if (!db) {
-    db = new sqlite3.Database(_config.dbPath);
+  static #setup() {
+    if (!this.#db) {
+      this.#db = new sqlite3.Database(':memory:');
+      this.#db.exec('CREATE TABLE IF NOT EXISTS cache (key TEXT, value TEXT)');
+    }
   }
 
-  db.exec('CREATE TABLE IF NOT EXISTS cache (key TEXT, value TEXT)');
+  static set(key, value) {
+    this.#setup();
 
-  return db;
-}
+    const stringifiedValue = JSON.stringify(value);
 
-function set(key, value) {
-  const stringifiedValue = JSON.stringify(value);
+    return new Promise((resolve, reject) => {
+      this.#db.get('SELECT * FROM cache WHERE key = ?', [key], (err, row) => {
+        if (err) {
+          reject(err);
+          return;
+        }
 
-  return new Promise((resolve, reject) => {
-    getDb().get('SELECT * FROM cache WHERE key = ?', [key], (err, row) => {
-      if (err) {
-        reject(err);
-        return;
-      }
+        if (row) {
+          this.#db.run(
+            'UPDATE cache SET value = ? WHERE key = ?',
+            [stringifiedValue, key],
+            (err) => {
+              if (err) {
+                reject(err);
+                return;
+              }
 
-      if (row) {
-        getDb().run(
-          'UPDATE cache SET value = ? WHERE key = ?',
-          [stringifiedValue, key],
-          (err) => {
-            if (err) {
-              reject(err);
-              return;
+              resolve();
             }
+          );
+        } else {
+          this.#db.run(
+            'INSERT INTO cache (key, value) VALUES (?, ?)',
+            [key, stringifiedValue],
+            (err) => {
+              if (err) {
+                reject(err);
+                return;
+              }
 
-            resolve();
-          }
-        );
-      } else {
-        getDb().run(
-          'INSERT INTO cache (key, value) VALUES (?, ?)',
-          [key, stringifiedValue],
-          (err) => {
-            if (err) {
-              reject(err);
-              return;
+              resolve();
             }
-
-            resolve();
-          }
-        );
-      }
+          );
+        }
+      });
     });
-  });
+  }
+
+  static get(key) {
+    this.#setup();
+
+    return new Promise((resolve, reject) => {
+      this.#db.get('SELECT * FROM cache WHERE key = ?', [key], (err, row) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        if (row) {
+          resolve(JSON.parse(row.value));
+        } else {
+          resolve(null);
+        }
+      });
+    });
+  }
 }
 
-function get(key) {
-  return new Promise((resolve, reject) => {
-    getDb().get('SELECT * FROM cache WHERE key = ?', [key], (err, row) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-
-      if (row) {
-        resolve(JSON.parse(row.value));
-      } else {
-        resolve(null);
-      }
-    });
-  });
-}
-
-module.exports = {
-  set,
-  get,
-};
+module.exports = Cache;

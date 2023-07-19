@@ -1,6 +1,8 @@
 const { expect, describe, test, beforeEach } = require('@jest/globals');
+const Config = require('../src/lib/config');
 
 const goodConfig = require('../test/mocks/config');
+const InvalidConfigError = require('../src/core/errors/InvalidConfigError');
 
 describe('config test', () => {
   beforeEach(() => {
@@ -9,59 +11,46 @@ describe('config test', () => {
   });
 
   test('should implement a setup method to configure the module', () => {
-    const { setup } = require('../src/lib/config');
-
-    expect(setup).toBeDefined();
-    expect(typeof setup).toBe('function');
+    expect(Config.setup).toBeDefined();
+    expect(typeof Config.setup).toBe('function');
   });
 
   test('should implement a getConfig function', () => {
-    const { getConfig } = require('../src/lib/config');
-
-    expect(getConfig).toBeDefined();
-    expect(typeof getConfig).toBe('function');
+    expect(Config.config).toBeDefined();
   });
 
   test('should setup the config object', () => {
-    const { setup, getConfig } = require('../src/lib/config');
-
     const expected = goodConfig;
 
-    setup(expected);
+    Config.setup(expected);
 
-    expect(getConfig()).toEqual(expected);
+    expect(Config.config).toEqual(expected);
   });
 
   test('should validate if the mailer config is valid', () => {
-    const { setup } = require('../src/lib/config');
-
     expect(() => {
-      setup({
+      Config.setup({
         ...goodConfig,
         mailer: 'invalid',
       });
-    }).toThrowError('Invalid mailer config');
+    }).toThrow(InvalidConfigError);
   });
 
   test('should validate if the host property in mailer object is valid', () => {
-    const { setup } = require('../src/lib/config');
-
     expect(() => {
-      setup({
+      Config.setup({
         ...goodConfig,
         mailer: {
           ...goodConfig.mailer,
           host: 123,
         },
       });
-    }).toThrowError('Invalid mailer config');
+    }).toThrow(InvalidConfigError);
   });
 
   test('should validate if the port property in mailer object is valid', () => {
-    const { setup } = require('../src/lib/config');
-
     expect(() => {
-      setup({
+      Config.setup({
         ...goodConfig,
         mailer: {
           ...goodConfig.mailer,
@@ -69,90 +58,78 @@ describe('config test', () => {
           port: 'invalid',
         },
       });
-    }).toThrowError('Invalid mailer config');
+    }).toThrow(InvalidConfigError);
   });
 
   test('should validate if the auth property in mailer object is valid', () => {
-    const { setup } = require('../src/lib/config');
-
     expect(() => {
-      setup({
+      Config.setup({
         ...goodConfig,
         mailer: {
           ...goodConfig.mailer,
           auth: 'invalid',
         },
       });
-    }).toThrowError('Invalid mailer config');
+    }).toThrow(InvalidConfigError);
   });
 
   test('should validate if the otp config is valid', () => {
-    const { setup } = require('../src/lib/config');
-
     expect(() => {
-      setup({
+      Config.setup({
         ...goodConfig,
         otp: 'invalid',
       });
-    }).toThrowError('Invalid otp config');
+    }).toThrow(InvalidConfigError);
   });
 
   test('should validate if the length property in otp config is valid', () => {
-    const { setup } = require('../src/lib/config');
-
     expect(() => {
-      setup({
+      Config.setup({
         ...goodConfig,
         otp: {
           ...goodConfig.otp,
           length: 'invalid',
         },
       });
-    }).toThrowError('Invalid otp config');
+    }).toThrow(InvalidConfigError);
   });
 
   test('should validate if the ttl property in otp config is valid', () => {
-    const { setup } = require('../src/lib/config');
-
     expect(() => {
-      setup({
+      Config.setup({
         ...goodConfig,
         otp: {
           ...goodConfig.otp,
           ttl: 'invalid',
         },
       });
-    }).toThrowError('Invalid otp config');
+    }).toThrow(InvalidConfigError);
   });
 
   test('should return to default config if setup is called without arguments', () => {
-    const { setup, getConfig } = require('../src/lib/config');
-
     const expected = goodConfig;
 
-    setup(expected);
+    Config.setup(expected);
 
-    expect(getConfig()).toEqual(expected);
+    expect(Config.config).toEqual(expected);
 
-    setup();
+    Config.setup();
 
-    expect(getConfig()).not.toEqual(expected);
+    expect(Config.config).not.toEqual(expected);
   });
 
   test('should return into config object only the allowed keys', () => {
-    const { setup, getConfig } = require('../src/lib/config');
-
     const expected = goodConfig;
 
-    setup(expected);
+    Config.setup(expected);
 
-    expect(getConfig()).toEqual(expected);
+    expect(Config.config).toEqual(expected);
 
-    setup({
+    Config.setup({
       ...expected,
       invalidKey: 'invalidValue',
     });
 
-    expect(getConfig()).toEqual(expected);
+    expect(Config.config).toEqual(expected);
   });
 });
