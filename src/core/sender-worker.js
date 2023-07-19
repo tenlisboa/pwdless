@@ -5,6 +5,7 @@ const {
   workerData,
 } = require('worker_threads');
 const sendEmail = require('./sender');
+const Config = require('../lib/config');
 const SendEmailOptions = require('./sender').SendEmailOptions;
 
 if (isMainThread) {
@@ -16,9 +17,14 @@ if (isMainThread) {
 }
 
 function setupEmailSenderWorker(options = SendEmailOptions) {
+  const config = Config.config;
+
   return new Promise((resolve, reject) => {
     const worker = new Worker(__filename, {
-      workerData: options,
+      workerData: {
+        options,
+        config,
+      },
     });
     worker.on('message', resolve);
     worker.on('error', reject);
